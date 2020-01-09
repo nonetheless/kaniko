@@ -25,6 +25,7 @@ GOARCH = amd64
 ORG := github.com/GoogleContainerTools
 PROJECT := kaniko
 REGISTRY?=gcr.io/kaniko-project
+TRANSWARP?=172.16.1.99/gold/kaniko
 
 REPOPATH ?= $(ORG)/$(PROJECT)
 VERSION_PACKAGE = $(REPOPATH)/pkg/version
@@ -66,8 +67,11 @@ images:
 	docker build ${BUILD_ARG} -t $(REGISTRY)/executor:debug -f deploy/Dockerfile_debug .
 	docker build ${BUILD_ARG} -t $(REGISTRY)/warmer:latest -f deploy/Dockerfile_warmer .
 
-.PHONY: push
-push:
-    docker push $(REGISTRY)/executor:latest
-    docker push $(REGISTRY)/executor:debug
-    docker push $(REGISTRY)/warmer:latest
+.PHONY: transwarp-tag
+transwarp-tag:
+	docker tag $(REGISTRY)/executor:latest $(TRANSWARP)/executor:latest
+	docker tag $(REGISTRY)/executor:debug $(TRANSWARP)/executor:debugt
+	docker tag $(REGISTRY)/warmer:latest $(TRANSWARP)/warmer:latest
+	docker push $(TRANSWARP)/executor:latest
+	docker push $(TRANSWARP)/executor:debugt
+	docker push $(TRANSWARP)/warmer:latest

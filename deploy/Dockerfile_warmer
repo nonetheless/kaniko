@@ -19,7 +19,7 @@ WORKDIR /go/src/github.com/GoogleContainerTools/kaniko
 COPY . .
 RUN make out/warmer
 
-FROM scratch
+FROM registry.cn-shenzhen.aliyuncs.com/linxin/scratch
 COPY --from=0 /go/src/github.com/GoogleContainerTools/kaniko/out/warmer /kaniko/warmer
 COPY files/ca-certificates.crt /kaniko/ssl/certs/
 ENV HOME /root
